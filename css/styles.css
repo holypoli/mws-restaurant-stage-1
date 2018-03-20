@@ -38,10 +38,12 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 #maincontent {
   background-color: #f3f3f3;
   min-height: 100%;
+  width: 100%;
 }
 #footer {
   background-color: #444;
   color: #aaa;
+  width: 100%;
   font-size: 8pt;
   letter-spacing: 1px;
   padding: 25px;
@@ -56,11 +58,13 @@ nav {
   text-align:center;
 }
 nav h1 {
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 20px;
 }
 nav h1 a {
   color: #fff;
-  font-size: 14pt;
+  font-size: 1.2rem;
   font-weight: 200;
   letter-spacing: 10px;
   text-transform: uppercase;
@@ -183,6 +187,12 @@ nav h1 a {
 }
 
 /* ====================== Restaurant Details ====================== */
+
+#maincontent {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .inside header {
   position: fixed;
   top: 0;
@@ -190,12 +200,8 @@ nav h1 a {
   z-index: 1000;
 }
 .inside #map-container {
-  background: blue none repeat scroll 0 0;
-  height: 87%;
-  position: fixed;
-  right: 0;
-  top: 80px;
-  width: 50%;
+  height: 400px;
+  width: 100%;
 }
 .inside #map {
   background-color: #ccc;
@@ -205,7 +211,7 @@ nav h1 a {
 .inside #footer {
   bottom: 0;
   position: absolute;
-  width: 50%;
+  width: 100%;
 }
 #restaurant-name {
   color: #f18200;
@@ -218,7 +224,7 @@ nav h1 a {
   line-height: 1.1;
 }
 #restaurant-img {
-	width: 90%;
+  width: 90%;
 }
 #restaurant-address {
   font-size: 12pt;
@@ -239,8 +245,9 @@ nav h1 a {
 #restaurant-container, #reviews-container {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
-  padding: 140px 40px 30px;
-  width: 50%;
+  width: 100%;
+  margin-left: auto;
+  margin-right:auto;
 }
 #reviews-container {
   padding: 30px 40px 80px;
@@ -258,10 +265,10 @@ nav h1 a {
 }
 #reviews-list li {
   background-color: #fff;
-    border: 2px solid #f3f3f3;
+  border: 2px solid #f3f3f3;
   display: block;
   list-style-type: none;
-  margin: 0 0 30px;
+  margin: 0 0 0 30px;
   overflow: hidden;
   padding: 0 20px 20px;
   position: relative;
@@ -273,3 +280,7 @@ nav h1 a {
 #restaurant-hours td {
   color: #666;
 }
+
+/* Media Queries */
+
+/* TODO: add media queries for responsiveness */
