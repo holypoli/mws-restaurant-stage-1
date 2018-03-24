@@ -113,6 +113,7 @@
   flex-wrap: wrap;
   box-shadow: 5px 5px 2px 0 #e3e3e3;
 }
+
 #reviews-list li p {
   font-family: Arial, sans-serif;
   font-weight: 200;
@@ -145,7 +146,7 @@
 #reviews-list .rating {
   background-color: #ef8800;
   color: #fff;
-  padding: 0.3rem;
+  padding: 0.4rem;
   letter-spacing: 1px;
   font-weight: 500;
   border-radius: 3px;
@@ -188,8 +189,7 @@
 
   #reviews-container ul {
     display: flex;
-    flex: wrap;
-    flex-direction: row;
+    flex-wrap: wrap;
   }
 
   #reviews-container ul li {
@@ -197,6 +197,9 @@
     margin-left: 15px;
   }
 
+  #reviews-container .comments {
+    height: 100%;
+  }
 }
 
 @media screen and (min-width: 1000px) {
@@ -206,5 +209,9 @@
     width: 1000px;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  #reviews-container ul li {
+    width: 27%;
   }
 }
