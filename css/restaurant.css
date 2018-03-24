@@ -177,9 +177,14 @@
     align-items: center;
   }
 
+  #restaurant-name {
+    width: 100%;
+  }
+
   .restaurant-pic-cuisine {
     width: 57%;
     margin-left: 20px;
+    order: 1;
   }
 
   .restaurant-info {
