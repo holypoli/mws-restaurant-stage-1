@@ -30,7 +30,7 @@ fetchNeighborhoods = () => {
 registerServiceWorker = () => {
   if (navigator.serviceWorker) {
     navigator.serviceWorker.register('/sw.js').then((reg) => {
-      console.log('Service Worker registerd');
+      console.log('Service Worker registerd scope is: ' + reg.scope);
     }, (err) => {
       console.log('OH NOOO!!!');
     });
