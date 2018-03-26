@@ -158,6 +158,7 @@ createRestaurantHTML = restaurant => {
   const link = document.createElement("a");
   link.href = DBHelper.urlForRestaurant(restaurant);
   link.setAttribute("aria-hidden", "true");
+  link.setAttribute("tabindex", "-1");
   li.append(link);
 
   const image = document.createElement("img");

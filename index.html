@@ -17,6 +17,7 @@
         <a href="/">Restaurant Reviews</a>
       </h1>
     </nav>
+    <a href="#neighborhoods-select" class="skip-link">Skip to main content</a>
   </header>
 
   <main id="maincontent">
@@ -24,7 +25,7 @@
       <div id="map" aria-label="Google Maps"></div>
     </section>
     <section>
-      <div class="filter-options">
+      <div id="filter-options">
         <h2>Filter Results</h2>
         <select id="neighborhoods-select" aria-label="Select Neigborhood" name="neighborhoods" onchange="updateRestaurants()">
           <option value="all">All Neighborhoods</option>
