@@ -199,3 +199,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 };
+
+/*
+* Cache restaurant page when selected on main page
+*/

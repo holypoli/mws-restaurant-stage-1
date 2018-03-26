@@ -1,7 +1,7 @@
 /*
 * Sevice worker file all caching happens here
 */
-const staticCacheName = 'restaurant-cache-v0'
+const staticCacheName = 'restaurant-cache-v1'
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
@@ -10,6 +10,7 @@ self.addEventListener('install', (event) => {
                 'restaurant.html',
                 'index.html',
                 'css/styles.css',
+                'css/restaurant.css',
                 'js/main.js',
                 'js/restaurant_info.js',
                 'js/dbhelper.js',
@@ -27,4 +28,13 @@ self.addEventListener('install', (event) => {
             ]);
         })
     )
+})
+
+self.addEventListener('fetch', (event) => {
+    const requestUrl = new URL(event.request.url);
+    
+    if (requestUrl.origin === location.origin) {
+        return event.respondWith(caches.match(requestUrl.pathname));
+        console.log('returned from cache');
+    }
 })
