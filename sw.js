@@ -14,6 +14,7 @@ self.addEventListener('install', (event) => {
                 'js/main.js',
                 'js/restaurant_info.js',
                 'js/dbhelper.js',
+                'data/restaurants.json',
                 'img/1.jpg',
                 'img/2.jpg',
                 'img/3.jpg',
@@ -34,7 +35,10 @@ self.addEventListener('fetch', (event) => {
     const requestUrl = new URL(event.request.url);
     
     if (requestUrl.origin === location.origin) {
-        return event.respondWith(caches.match(requestUrl.pathname));
-        console.log('returned from cache');
+        event.respondWith(
+            caches.match(requestUrl.pathname).then(response => {
+                return response || fetch(event.request);
+            })
+        )
     }
 })

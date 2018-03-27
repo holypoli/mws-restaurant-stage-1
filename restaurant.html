@@ -23,11 +23,13 @@
       </h1>
     </nav>
     <!-- Beginning breadcrumb -->
-    <ul id="breadcrumb">
-      <li>
-        <a href="/">Home</a>
-      </li>
-    </ul>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ul id="breadcrumb">
+        <li>
+          <a href="/">Home</a>
+        </li>
+      </ul>
+    </nav>
     <!-- Skip link to the main content. -->
     <!-- Would have to go through all the maps stuff otherwise-->
     <a href="#restaurant-container" class="skip-link">Skip to restaurant details</a>
@@ -40,12 +42,12 @@
   <main id="maincontent">
     <!-- Beginning map -->
     <section id="map-container">
-      <div id="map" aria-label="Google Maps"></div>
+      <div id="map" aria-label="Google Maps" aria-role="application"></div>
     </section>
     <!-- End map -->
     <!-- Beginning restaurant -->
     <section id="restaurant-container">
-      <h1 id="restaurant-name"></h1>
+      <h2 id="restaurant-name"></h2>
       <div class="restaurant-pic-cuisine">
         <img id="restaurant-img">
         <p id="restaurant-cuisine"></p>

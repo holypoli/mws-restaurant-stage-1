@@ -29,10 +29,10 @@ fetchNeighborhoods = () => {
 /* Register Service Worker */
 registerServiceWorker = () => {
   if (navigator.serviceWorker) {
-    navigator.serviceWorker.register('/sw.js').then((reg) => {
+    navigator.serviceWorker.register('sw.js').then((reg) => {
       console.log('Service Worker registerd scope is: ' + reg.scope);
     }, (err) => {
-      console.log('OH NOOO!!!');
+      console.log('OH NOOO!!!', err);
     });
   }
 };
@@ -167,7 +167,7 @@ createRestaurantHTML = restaurant => {
   image.alt = `Impression of ${restaurant.name}`;
   link.append(image);
 
-  const name = document.createElement("h1");
+  const name = document.createElement("h3");
   name.innerHTML = restaurant.name;
   li.append(name);
 

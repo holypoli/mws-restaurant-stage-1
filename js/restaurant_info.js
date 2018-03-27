@@ -1,15 +1,6 @@
 let restaurant;
 var map;
 
-// self.addEventListener('fetch',(event) => {
-//   const id = getParameterByName('id');
-//   event.respondWith(() => {
-//     caches.open('restaurant-pages').then((cache) => {
-//       return cache.match(event)
-//     })
-//   })
-// })
-
 /**
  * Initialize Google map, called from HTML.
  */
@@ -43,6 +34,7 @@ fetchRestaurantFromURL = callback => {
   if (!id) {
     // no id found in URL
     error = "No restaurant id in URL";
+    createEmptyPage();
     callback(error, null);
   } else {
     DBHelper.fetchRestaurantById(id, (error, restaurant) => {
@@ -70,7 +62,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.getElementById("restaurant-img");
   image.className = "restaurant-img";
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.alt = `Impression of ${restaurant.name}`;
+  image.alt = restaurant.alt_text;
 
   const cuisine = document.getElementById("restaurant-cuisine");
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -110,7 +102,7 @@ fillRestaurantHoursHTML = (
  */
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById("reviews-container");
-  const title = document.createElement("h2");
+  const title = document.createElement("h3");
   title.innerHTML = "Reviews";
   container.appendChild(title);
 
@@ -168,6 +160,21 @@ fillBreadcrumb = (restaurant = self.restaurant) => {
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
 };
+
+/*
+ * Create page if there is no id
+ */
+
+createEmptyPage = () => {
+  const textarea = document.getElementById("restaurant-container");
+  const text = document.createElement("p");
+  const cuisineBox = document.getElementById("restaurant-cuisine")
+  cuisineBox.hidden = "true";
+  text.innerHTML = "This page doesn't exist!";
+  text.style.marginLeft = "20px";
+  text.style.marginRight = "20px";
+  textarea.appendChild(text);
+}
 
 /**
  * Get a parameter by name from page URL.
