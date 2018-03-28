@@ -1,6 +1,19 @@
 let restaurant;
 var map;
 
+/*
+ * Register Service Worker
+*/
+registerServiceWorker = () => {
+  if (navigator.serviceWorker) {
+    navigator.serviceWorker.register('sw.js').then((reg) => {
+      console.log('Service Worker registerd scope is: ' + reg.scope);
+    }, (err) => {
+      console.log('OH NOOO!!!', err);
+    });
+  }
+};
+
 /**
  * Initialize Google map, called from HTML.
  */
@@ -43,6 +56,7 @@ fetchRestaurantFromURL = callback => {
         console.error(error);
         return;
       }
+      registerServiceWorker();
       fillRestaurantHTML();
       callback(null, restaurant);
     });
@@ -62,7 +76,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.getElementById("restaurant-img");
   image.className = "restaurant-img";
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.alt = restaurant.alt_text;
+  image.alt = `${restaurant.name}, ${restaurant.alt_text}`;
 
   const cuisine = document.getElementById("restaurant-cuisine");
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -164,7 +178,6 @@ fillBreadcrumb = (restaurant = self.restaurant) => {
 /*
  * Create page if there is no id
  */
-
 createEmptyPage = () => {
   const textarea = document.getElementById("restaurant-container");
   const text = document.createElement("p");
