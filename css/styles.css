@@ -190,8 +190,6 @@ nav h1 a {
   background-color: #ccc;
   display: block;
   max-width: 100%;
-  min-height: 248px;
-  min-width: 100%;
 }
 #restaurants-list li h3 {
   color: #ad5e01;
@@ -218,7 +216,7 @@ nav h1 a {
   text-transform: uppercase;
   position: absolute;
   bottom: 15px;
-  left: 70px;
+  left: 61px;
   box-shadow: 2px 2px 0 0 #aaa;
 }
 
