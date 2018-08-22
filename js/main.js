@@ -5,16 +5,17 @@ var markers = [];
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
-document.addEventListener("DOMContentLoaded", event => {
+document.addEventListener('DOMContentLoaded', event => {
   fetchNeighborhoods();
   fetchCuisines();
   registerServiceWorker();
+  indexController.openDatabase();
 });
 
 /**
  * Fetch all neighborhoods and set their HTML.
  */
-fetchNeighborhoods = () => {
+const fetchNeighborhoods = () => {
   DBHelper.fetchNeighborhoods((error, neighborhoods) => {
     if (error) {
       // Got an error
@@ -27,7 +28,7 @@ fetchNeighborhoods = () => {
 };
 
 /* Register Service Worker */
-registerServiceWorker = () => {
+const registerServiceWorker = () => {
   if (navigator.serviceWorker) {
     navigator.serviceWorker.register('sw.js').then((reg) => {
       console.log('Service Worker registerd scope is: ' + reg.scope);
@@ -38,9 +39,9 @@ registerServiceWorker = () => {
 };
 
 /**
- * Set neighborhoods HTML.
+ *  Set neighborhoods HTML.
  */
-fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
+const fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
   const select = document.getElementById("neighborhoods-select");
   neighborhoods.forEach(neighborhood => {
     const option = document.createElement("option");
@@ -53,7 +54,7 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
 /**
  * Fetch all cuisines and set their HTML.
  */
-fetchCuisines = () => {
+const fetchCuisines = () => {
   DBHelper.fetchCuisines((error, cuisines) => {
     if (error) {
       // Got an error!
@@ -126,7 +127,7 @@ updateRestaurants = () => {
 /**
  * Clear current restaurants, their HTML and remove their map markers.
  */
-resetRestaurants = restaurants => {
+const resetRestaurants = restaurants => {
   // Remove all restaurants
   self.restaurants = [];
   const ul = document.getElementById("restaurants-list");
@@ -141,7 +142,7 @@ resetRestaurants = restaurants => {
 /**
  * Create all restaurants HTML and add them to the webpage.
  */
-fillRestaurantsHTML = (restaurants = self.restaurants) => {
+const fillRestaurantsHTML = (restaurants = self.restaurants) => {
   const ul = document.getElementById("restaurants-list");
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
@@ -152,7 +153,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 /**
  * Create restaurant HTML.
  */
-createRestaurantHTML = restaurant => {
+const createRestaurantHTML = restaurant => {
   const li = document.createElement("li");
 
   const link = document.createElement("a");

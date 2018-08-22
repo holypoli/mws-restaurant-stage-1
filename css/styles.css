@@ -6,7 +6,7 @@ td,
 th,
 p {
   font-family: Raleway, Arial, Helvetica, sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   color: #333;
   line-height: 1.5;
 }
@@ -78,7 +78,6 @@ nav {
   text-align: center;
 }
 nav h1 {
-  text-align: center;
   font-size: 1.2rem;
   font-weight: 200;
   padding-top: 15px;
@@ -112,7 +111,7 @@ nav h1 a {
 /* Add a slash symbol (/) before/behind each list item */
 #breadcrumb li + li:before {
   padding: 8px;
-  color: black;
+  color: #333;
   content: "/\00a0";
 }
 
@@ -234,7 +233,7 @@ nav h1 a {
   top: 0;
 }
 
-/* Media Queries */
+/* ====================== Media Queries ====================== */
 
 @media screen and (min-width: 310px) and (max-width: 689px) {
   #restaurants-list {

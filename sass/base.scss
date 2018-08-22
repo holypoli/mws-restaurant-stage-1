@@ -1,0 +1,78 @@
+$font-stack: Raleway, Arial, Helvetica, sans-serif;
+$main-dark: #333;
+$main-light: #f3f3f3;
+
+body,
+td,
+th,
+p {
+  font-family: $font-stack;
+  font-size: 14px;
+  color: $main-dark;
+  line-height: 1.5;
+}
+body {
+  background-color: #fdfdfd;
+  margin: 0;
+  position: relative;
+}
+ul,
+li {
+  font-family: Raleway, Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  color: #333;
+}
+a {
+  color: orange;
+  text-decoration: none;
+
+  &:hover,
+  &focus {
+    color: #3397db;
+    text-decoration: none;
+  }
+
+  img {
+    border: none 0px #fff;
+  }
+}
+
+a 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font-stack;
+  margin: 0;
+}
+article,
+aside,
+canvas,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+
+#maincontent {
+  background-color: $main-light;
+  min-height: 100%;
+  width: 100%;
+}
+#footer {
+  background-color: $main-dark;
+  color: $main-light;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  padding: 25px;
+  text-align: center;
+  text-transform: uppercase;
+}

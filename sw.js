@@ -7,11 +7,11 @@ self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(staticCacheName).then(cache => {
       return cache.addAll([
-        "restaurant.html",
-        "index.html",
-        "css/styles.css",
-        "css/restaurant.css",
-        "js/main.js",
+        'restaurant.html',
+        'index.html',
+        'css/styles.css',
+        'css/restaurant.css',
+        'js/main.js',
         "js/restaurant_info.js",
         "js/dbhelper.js",
         "data/restaurants.json",
@@ -31,8 +31,8 @@ self.addEventListener("install", event => {
   );
 });
 
-self.addEventListener("activate", event => {
-  console.log("activate new service worker");
+self.addEventListener('activate', event => {
+  console.log('activate new service worker');
 
 
   event.waitUntil(
@@ -48,14 +48,14 @@ self.addEventListener("activate", event => {
   )
 });
 
-self.addEventListener("fetch", event => {
-  const requestUrl = new URL(event.request.url);
+// self.addEventListener('fetch', event => {
+//   const requestUrl = new URL(event.request.url);
 
-  if (requestUrl.origin === location.origin) {
-    event.respondWith(
-      caches.match(requestUrl.pathname).then(response => {
-        return response || fetch(event.request);
-      })
-    );
-  }
-});
+//   // if (requestUrl.origin === location.origin) {
+//   //   event.respondWith(
+//   //     caches.match(requestUrl.pathname).then(response => {
+//   //       return response || fetch(event.request);
+//   //     })
+//   //   );
+//   // }
+// });
