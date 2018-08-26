@@ -2,6 +2,7 @@
 * Sevice worker file all caching happens here
 */
 const staticCacheName = "restaurant-cache-v3";
+const imgCacheName = "images-cache-v1";
 
 self.addEventListener("install", event => {
   event.waitUntil(
@@ -38,6 +39,24 @@ self.addEventListener("activate", event => {
       );
     })
   );
+});
+
+self.addEventListener("fetch", event => {
+  const requestUrl = new URL(event.request.url);
+
+  if (requestUrl.pathname.startsWith("/responsive-img/")) {
+    caches.open(imgCacheName).then(cache => {
+      cache.match(event.request.url).then(response => {
+        return (
+          response ||
+          fetch(event.request).then(serverResponse => {
+            cache.put(event.request.url, serverResponse.clone());
+            return serverResponse;
+          })
+        );
+      });
+    });
+  }
 });
 
 self.addEventListener("fetch", event => {
