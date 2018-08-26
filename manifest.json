@@ -5,5 +5,17 @@
     "start_url": "/",
     "display": "standalone",
     "theme_color": "#252831",
-    "background_color": "#333"
+    "background_color": "#ddd",
+    "icons": [
+        {
+        "src": "/responsive-img/icons/icon-192.png",
+        "type": "image/png",
+        "sizes": "192x192"
+        },
+        {
+        "src": "/responsive-img/icons/icon-512.png",
+        "type": "image/png",
+        "sizes": "512x512"
+        }
+    ]
 }
