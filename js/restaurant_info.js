@@ -6,11 +6,14 @@ var map;
 */
 registerServiceWorker = () => {
   if (navigator.serviceWorker) {
-    navigator.serviceWorker.register('sw.js').then((reg) => {
-      console.log('Service Worker registerd scope is: ' + reg.scope);
-    }, (err) => {
-      console.log('OH NOOO!!!', err);
-    });
+    navigator.serviceWorker.register("sw.js").then(
+      reg => {
+        console.log("Service Worker registerd scope is: " + reg.scope);
+      },
+      err => {
+        console.log("OH NOOO!!!", err);
+      }
+    );
   }
 };
 
@@ -18,50 +21,54 @@ registerServiceWorker = () => {
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
-  fetchRestaurantFromURL((error, restaurant) => {
-    if (error) {
-      // Got an error!
-      console.error(error);
-    } else {
+  const id = getParameterByName("id");
+  if (!id) {
+    console.error("No Id in the URL");
+    return;
+  } else {
+    DBHelper.fetchRestaurantByIdOffline(id).then(restaurant => {
+      self.restaurant = restaurant;
+
+      fillRestaurantHTML();
+
       self.map = new google.maps.Map(document.getElementById("map"), {
         zoom: 16,
         center: restaurant.latlng,
         scrollwheel: false
       });
+
+      registerServiceWorker();
       fillBreadcrumb();
+
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-    }
-  });
+    });
+  }
 };
 
 /**
  * Get current restaurant from page URL.
  */
-fetchRestaurantFromURL = callback => {
-  if (self.restaurant) {
-    // restaurant already fetched!
-    callback(null, self.restaurant);
-    return;
-  }
-  const id = getParameterByName("id");
-  if (!id) {
-    // no id found in URL
-    error = "No restaurant id in URL";
-    createEmptyPage();
-    callback(error, null);
-  } else {
-    DBHelper.fetchRestaurantById(id, (error, restaurant) => {
-      self.restaurant = restaurant;
-      if (!restaurant) {
-        console.error(error);
-        return;
-      }
-      registerServiceWorker();
-      fillRestaurantHTML();
-      callback(null, restaurant);
-    });
-  }
-};
+// fetchRestaurantFromURL = callback => {
+//   if (self.restaurant) {
+//     // restaurant already fetched!
+//     callback(null, self.restaurant);
+//     return;
+//   }
+//   const id = getParameterByName("id");
+//   if (!id) {
+//     // no id found in URL
+//     error = "No restaurant id in URL";
+//     createEmptyPage();
+//     callback(error, null);
+//   } else {
+//     DBHelper.fetchRestaurantByIdOffline(id) => {
+//       self.restaurant = restaurant;
+//       registerServiceWorker();
+//       fillRestaurantHTML();
+//       // callback(null, restaurant);
+//     };
+//   }
+// };
 
 /**
  * Create restaurant HTML and add it to the webpage
@@ -74,10 +81,34 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   address.innerHTML = restaurant.address;
 
   const image = document.getElementById("restaurant-img");
+  // picture.className = "restaurant-img";
+
+  // const largeSource = document.createElement("source");
+  // largeSource.media = "(min-width: 1024px)";
+  // largeSource.sizes = "100vw";
+  // largeSource.srcset = DBHelper.imageUrlForRestaurant(restaurant);
+  // picture.append(largeSource);
+
+  // const mediumSource = document.createElement("source");
+  // mediumSource.media = "(min-width: 400px) and (max-width: 800px)";
+  // mediumSource.sizes = "100vw";
+  // mediumSource.srcset = DBHelper.imageUrlForRestaurantMedium(restaurant);
+  // picture.append(mediumSource);
+
+  // const smallSource = document.createElement("source");
+  // smallSource.media = "(max-width: 399px)";
+  // smallSource.sizes = "100vw";
+  // smallSource.srcset = DBHelper.imageUrlForRestaurantSmall(restaurant);
+  // picture.append(smallSource);
+
+  // const image = document.createElement("img");
   image.className = "restaurant-img";
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.src = DBHelper.imageSrcForRestaurant(restaurant);
+  image.srcset = DBHelper.imageUrlForRestaurant(restaurant);
+  // picture.append(image);
+
   image.alt = `${restaurant.name},
-   ${restaurant.alt_text}`;
+   ${restaurant.neighborhood}`;
 
   const cuisine = document.getElementById("restaurant-cuisine");
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -182,13 +213,13 @@ fillBreadcrumb = (restaurant = self.restaurant) => {
 createEmptyPage = () => {
   const textarea = document.getElementById("restaurant-container");
   const text = document.createElement("p");
-  const cuisineBox = document.getElementById("restaurant-cuisine")
+  const cuisineBox = document.getElementById("restaurant-cuisine");
   cuisineBox.hidden = "true";
   text.innerHTML = "This page doesn't exist!";
   text.style.marginLeft = "20px";
   text.style.marginRight = "20px";
   textarea.appendChild(text);
-}
+};
 
 /**
  * Get a parameter by name from page URL.

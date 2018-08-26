@@ -5,11 +5,10 @@ var markers = [];
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
-document.addEventListener('DOMContentLoaded', event => {
+document.addEventListener("DOMContentLoaded", event => {
   fetchNeighborhoods();
   fetchCuisines();
   registerServiceWorker();
-  indexController.openDatabase();
 });
 
 /**
@@ -30,11 +29,14 @@ const fetchNeighborhoods = () => {
 /* Register Service Worker */
 const registerServiceWorker = () => {
   if (navigator.serviceWorker) {
-    navigator.serviceWorker.register('sw.js').then((reg) => {
-      console.log('Service Worker registerd scope is: ' + reg.scope);
-    }, (err) => {
-      console.log('OH NOOO!!!', err);
-    });
+    navigator.serviceWorker.register("sw.js").then(
+      reg => {
+        console.log("Service Worker registerd scope is: " + reg.scope);
+      },
+      err => {
+        console.log("OH NOOO!!!", err);
+      }
+    );
   }
 };
 
@@ -109,19 +111,11 @@ updateRestaurants = () => {
   const cuisine = cSelect[cIndex].value;
   const neighborhood = nSelect[nIndex].value;
 
-  DBHelper.fetchRestaurantByCuisineAndNeighborhood(
-    cuisine,
-    neighborhood,
-    (error, restaurants) => {
-      if (error) {
-        // Got an error!
-        console.error(error);
-      } else {
-        resetRestaurants(restaurants);
-        fillRestaurantsHTML();
-      }
-    }
-  );
+  DBHelper.fetchRestaurantsOffline().then(restaurants => {
+    self.restaurants = restaurants;
+    resetRestaurants(restaurants);
+    fillRestaurantsHTML();
+  });
 };
 
 /**
@@ -164,8 +158,9 @@ const createRestaurantHTML = restaurant => {
 
   const image = document.createElement("img");
   image.className = "restaurant-img";
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.alt = `${restaurant.name}, ${restaurant.alt_text}`;
+  image.src = DBHelper.imageSrcForRestaurant(restaurant);
+  image.srcset = DBHelper.imageUrlForRestaurant(restaurant);
+  image.alt = `${restaurant.name}, ${restaurant.neighborhood}`;
   link.append(image);
 
   const name = document.createElement("h3");
