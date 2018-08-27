@@ -46,31 +46,6 @@ window.initMap = () => {
 };
 
 /**
- * Get current restaurant from page URL.
- */
-// fetchRestaurantFromURL = callback => {
-//   if (self.restaurant) {
-//     // restaurant already fetched!
-//     callback(null, self.restaurant);
-//     return;
-//   }
-//   const id = getParameterByName("id");
-//   if (!id) {
-//     // no id found in URL
-//     error = "No restaurant id in URL";
-//     createEmptyPage();
-//     callback(error, null);
-//   } else {
-//     DBHelper.fetchRestaurantByIdOffline(id) => {
-//       self.restaurant = restaurant;
-//       registerServiceWorker();
-//       fillRestaurantHTML();
-//       // callback(null, restaurant);
-//     };
-//   }
-// };
-
-/**
  * Create restaurant HTML and add it to the webpage
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
@@ -81,31 +56,9 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   address.innerHTML = restaurant.address;
 
   const image = document.getElementById("restaurant-img");
-  // picture.className = "restaurant-img";
-
-  // const largeSource = document.createElement("source");
-  // largeSource.media = "(min-width: 1024px)";
-  // largeSource.sizes = "100vw";
-  // largeSource.srcset = DBHelper.imageUrlForRestaurant(restaurant);
-  // picture.append(largeSource);
-
-  // const mediumSource = document.createElement("source");
-  // mediumSource.media = "(min-width: 400px) and (max-width: 800px)";
-  // mediumSource.sizes = "100vw";
-  // mediumSource.srcset = DBHelper.imageUrlForRestaurantMedium(restaurant);
-  // picture.append(mediumSource);
-
-  // const smallSource = document.createElement("source");
-  // smallSource.media = "(max-width: 399px)";
-  // smallSource.sizes = "100vw";
-  // smallSource.srcset = DBHelper.imageUrlForRestaurantSmall(restaurant);
-  // picture.append(smallSource);
-
-  // const image = document.createElement("img");
   image.className = "restaurant-img";
   image.src = DBHelper.imageSrcForRestaurant(restaurant);
   image.srcset = DBHelper.imageUrlForRestaurant(restaurant);
-  // picture.append(image);
 
   image.alt = `${restaurant.name},
    ${restaurant.neighborhood}`;

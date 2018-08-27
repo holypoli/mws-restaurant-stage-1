@@ -95,6 +95,8 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   });
+
+  document.getElementById("map").overflow = "initial";
   updateRestaurants();
 };
 

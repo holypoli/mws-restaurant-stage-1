@@ -57,16 +57,10 @@ self.addEventListener("fetch", event => {
       });
     });
   }
-});
 
-self.addEventListener("fetch", event => {
-  const requestUrl = new URL(event.request.url);
-
-  if (requestUrl.origin === location.origin) {
-    event.respondWith(
-      caches.match(requestUrl.pathname).then(response => {
-        return response || fetch(event.request);
-      })
-    );
-  }
+  event.respondWith(
+    caches.match(requestUrl.pathname).then(response => {
+      return response || fetch(event.request);
+    })
+  );
 });
