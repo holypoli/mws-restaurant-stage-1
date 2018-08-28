@@ -105,9 +105,6 @@ fillRestaurantHoursHTML = (
  */
 fillReviewsHTML = () => {
   const container = document.getElementById("reviews-container");
-  const title = document.createElement("h3");
-  title.innerHTML = "Reviews";
-  container.appendChild(title);
 
   DBHelper.fetchRestaurantReviews(self.restaurant.id).then(reviews => {
     if (!reviews) {
@@ -117,6 +114,7 @@ fillReviewsHTML = () => {
       return;
     }
     const ul = document.getElementById("reviews-list");
+    ul.innerHTML = "";
     reviews.forEach(review => {
       ul.appendChild(createReviewHTML(review));
     });
@@ -186,11 +184,13 @@ submitForm = () => {
   review.append("rating", rating);
   review.append("comments", comments);
 
-  DBHelper.addRestaurantReview(review);
-  nameInput.value = "";
-  rating = 0;
-  comments = "";
-  form.display.hidden;
+  DBHelper.addRestaurantReview(review).then(() => {
+    nameInput.value = "";
+    rating = 0;
+    comments = "";
+    form.style.display = "none";
+    fillReviewsHTML();
+  });
 };
 
 /**

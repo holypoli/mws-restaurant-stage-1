@@ -103,6 +103,20 @@
     text-shadow: 1.5px 1.5px #bbb;
     margin-left: 20px;
   }
+
+  button {
+    margin-right: 30px;
+    margin-top: 10px;
+    width: 125px;
+    font-family: arial;
+    height: 40px;
+    font-size: 20px;
+    border-radius: 3px;
+    background-color: #5f3600;
+    border-style: none;
+    color: white;
+    float: right;
+  }
 }
 
 #reviews-list {
@@ -121,6 +135,7 @@
     width: 75%;
     display: flex;
     flex-wrap: wrap;
+    align-content: start;
     box-shadow: 5px 5px 2px 0 #e3e3e3;
 
     p {
@@ -273,9 +288,6 @@
         width: 40%;
         margin-left: 15px;
       }
-    }
-    .comments {
-      height: 100%;
     }
   }
 }

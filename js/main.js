@@ -222,7 +222,3 @@ lazyLoading = () => {
     intersectionObserver.observe(lazyImage);
   });
 };
-
-/*
-* Cache restaurant page when selected on main page
-*/

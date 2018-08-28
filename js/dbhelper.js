@@ -227,6 +227,12 @@ class DBHelper {
       .catch(err => console.error(err));
   }
 
+  static deleteRestaurantReview(id) {
+    return fetch(`${this.REVIEWS_URL}${id}`, {
+      method: "DELETE"
+    });
+  }
+
   /**
    * Restaurant page URL.
    */
