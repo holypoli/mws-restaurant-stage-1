@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", event => {
   fetchNeighborhoods();
   fetchCuisines();
   registerServiceWorker();
+  document.getElementById("map").overflow = "initial";
 });
 
 /**
@@ -96,7 +97,6 @@ window.initMap = () => {
     scrollwheel: false
   });
 
-  document.getElementById("map").overflow = "initial";
   updateRestaurants();
 };
 
@@ -143,6 +143,7 @@ const fillRestaurantsHTML = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
   });
+  lazyLoading();
   addMarkersToMap();
 };
 
@@ -159,9 +160,14 @@ const createRestaurantHTML = restaurant => {
   li.append(link);
 
   const image = document.createElement("img");
+  let datasrc = document.createAttribute("data-src");
+  datasrc.value = DBHelper.imageSrcForRestaurant(restaurant);
+  let datasrcset = document.createAttribute("data-srcset");
+  datasrcset.value = DBHelper.imageUrlForRestaurant(restaurant);
   image.className = "restaurant-img";
-  image.src = DBHelper.imageSrcForRestaurant(restaurant);
-  image.srcset = DBHelper.imageUrlForRestaurant(restaurant);
+  image.setAttributeNode(datasrc);
+  image.setAttributeNode(datasrcset);
+  // image.srcset = DBHelper.imageUrlForRestaurant(restaurant);
   image.alt = `${restaurant.name}, ${restaurant.neighborhood}`;
   link.append(image);
 
@@ -196,6 +202,24 @@ addMarkersToMap = (restaurants = self.restaurants) => {
       window.location.href = marker.url;
     });
     self.markers.push(marker);
+  });
+};
+
+lazyLoading = () => {
+  let lazyImages = document.querySelectorAll(".restaurant-img");
+
+  let intersectionObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        let lazyImage = entry.target;
+        lazyImage.src = lazyImage.dataset.src;
+        lazyImage.srcset = lazyImage.dataset.srcset;
+        intersectionObserver.unobserve(lazyImage);
+      }
+    });
+  });
+  lazyImages.forEach(lazyImage => {
+    intersectionObserver.observe(lazyImage);
   });
 };
 

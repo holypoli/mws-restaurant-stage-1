@@ -8,14 +8,15 @@ self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(staticCacheName).then(cache => {
       return cache.addAll([
-        "restaurant.html",
-        "index.html",
+        // "restaurant.html",
+        // "index.html",
+        "/",
         "css/styles.css",
         "css/restaurant.css",
         "js/main.js",
         "js/restaurant_info.js",
         "js/dbhelper.js",
-        "manifest.json",
+        // "manifest.json",
         "https://fonts.gstatic.com/s/raleway/v12/1Ptrg8zYS_SKggPNwOIpWqZPANqczVs.woff2"
       ]);
     })

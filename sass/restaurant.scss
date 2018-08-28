@@ -163,6 +163,73 @@
   }
 }
 
+/* ====================== Review Modal ================== */
+
+#review-form {
+  background-color: #ddd;
+  display: none;
+  cursor: pointer;
+  width: 300px;
+  height: 300px;
+  position: fixed;
+  margin-top: -150px;
+  margin-left: -150px;
+  top: 50%;
+  left: 50%;
+  z-index: 50;
+  box-shadow: 13px 13px 8px 5px #999;
+
+  h3 {
+    font-size: 18px;
+    margin-left: 10px;
+    margin-top: 10px;
+    font-weight: 600;
+    text-shadow: none;
+  }
+
+  label {
+    margin: 10px 5px;
+    color: #000;
+    font-weight: 400;
+  }
+
+  .comment-label {
+    position: relative;
+    top: -50px;
+  }
+  input, textarea {
+    margin: 10px 5px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  input#rating {
+    width: 35px;
+  }
+  
+  .overlay {
+    background: rgba(51,51,51,0.7);
+    width: 100vw;
+    height: 100vh;
+    z-index: 20;
+    position: absolute;
+  }
+
+  .modal-close {
+    color: #ddd;
+    background-color: red;
+    font-weight: bold;
+    height: 25px;
+    width: 25px;
+    font-size: 18px;
+    border-radius: 50%;
+    border-radius: 50%;
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    text-align: center;
+  }
+}
+
 /* ====================== Media Queries for restaurant page ====================== */
 
 @media screen and (min-width: 400px) {

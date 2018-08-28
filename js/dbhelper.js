@@ -11,6 +11,11 @@ class DBHelper {
     return `http://localhost:${port}/restaurants`;
   }
 
+  static get REVIEWS_URL() {
+    const port = 1337;
+    return `http://localhost:${port}/reviews/`;
+  }
+
   /**
    * Create new IndexDB
    */
@@ -199,6 +204,27 @@ class DBHelper {
         callback(null, uniqueCuisines);
       }
     });
+  }
+
+  /**
+   * Fetch reviews for restaurant
+   */
+  static fetchRestaurantReviews(id) {
+    let reviewPromise = new Promise((resolve, reject) => {
+      fetch(this.REVIEWS_URL + `?restaurant_id=${id}`).then(response =>
+        resolve(response.json())
+      );
+    }).catch(err => console.error(err));
+    return reviewPromise;
+  }
+
+  static addRestaurantReview(review) {
+    return fetch(this.REVIEWS_URL, {
+      method: "POST",
+      body: review
+    })
+      .then(response => console.log(response.json()))
+      .catch(err => console.error(err));
   }
 
   /**
