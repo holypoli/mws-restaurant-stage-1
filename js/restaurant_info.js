@@ -56,6 +56,21 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById("restaurant-name");
   name.innerHTML = restaurant.name;
 
+  const heart = document.getElementById("heart");
+  if (self.restaurant.is_favorite) {
+    heart.style.fill = "red";
+  }
+
+  heart.addEventListener("click", () => {
+    if (restaurant.is_favorite) {
+      heart.style.fill = "grey";
+      DBHelper.favorRestaurant(self.restaurant.id);
+    } else {
+      heart.style.fill = "red";
+      DBHelper.favorRestaurant(self.restaurant.id);
+    }
+  });
+
   const address = document.getElementById("restaurant-address");
   address.innerHTML = restaurant.address;
 

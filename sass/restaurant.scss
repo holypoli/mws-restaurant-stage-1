@@ -25,6 +25,17 @@
   }
 }
 
+.restaurant-top {
+  width: 100%;
+  display: flex;
+  align-content: flex-start;
+  flex-wrap: wrap;
+
+  svg {
+    margin-left: 10px;
+  }
+}
+
 #restaurant-name {
   color: #f18200;
   font-size: 2rem;
@@ -34,6 +45,7 @@
   text-transform: uppercase;
   line-height: 1.1;
   text-shadow: 1.5px 1.5px #bbb;
+  margin-right: 30px;
 }
 
 #restaurant-img {
@@ -220,14 +232,6 @@
   input#rating {
     width: 35px;
   }
-  
-  .overlay {
-    background: rgba(51,51,51,0.7);
-    width: 100vw;
-    height: 100vh;
-    z-index: 20;
-    position: absolute;
-  }
 
   .modal-close {
     color: #ddd;
@@ -288,10 +292,6 @@
     flex-wrap: wrap;
     flex-direction: row;
     align-items: center;
-  }
-
-  #restaurant-name {
-    width: 100%;
   }
 
   .restaurant-pic-cuisine {

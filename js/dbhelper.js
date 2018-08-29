@@ -215,6 +215,54 @@ class DBHelper {
   }
 
   /**
+   * Favor and unfavor restaurants
+   */
+
+  static favorRestaurant(id) {
+    console.log(id);
+    fetch(`${DBHelper.DATABASE_URL}/${id}/?is_favorite=true`, {
+      method: "PUT"
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        return this.openDb()
+          .then(db => {
+            const tx = db
+              .transaction("restaurants", "readwrite")
+              .objectStore("restaurants")
+              .put(data);
+            return tx.complete;
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      });
+  }
+
+  static unfavorRestaurant(id) {
+    fetch(`${DBHelper.DATABASE_URL}/${id}/?is_favorite=false`, {
+      method: "PUT"
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        return this.openDb()
+          .then(db => {
+            const tx = db
+              .transaction("restaurants", "readwrite")
+              .objectStore("restaurants")
+              .put(data);
+            return tx.complete;
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      });
+  }
+  /**
    * Fetch reviews for restaurant
    */
   static fetchRestaurantReviews(id) {
