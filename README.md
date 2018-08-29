@@ -1,10 +1,19 @@
 # Restaurant Review Web App
 
+An App to find restaurants, with the ability to review and favor them.
+
 ---
 
-##Stage 1 
 
-The web app shows a list of restaurants. For each restaurant there is a detail view with information about the restaurant, as well as some reviews. The site works on all screen sizes and also offline.
+###Getting Started
 
+To open this project clone the repo and make it run on your machine.
 
+With python3:
 
+```
+git clone "https://github.com/holypoli/restaurant-reviewer.git" my-restaurant-reviewer
+cd my-restaurant-reviewer
+python3 -m http.server
+```
+The repo for the dataserver is https://github.com/udacity/mws-restaurant-stage-3. Clone the repo onto your machine and follow the instructions given in the README to get it up and running.
