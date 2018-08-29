@@ -63,6 +63,7 @@ const fetchCuisines = () => {
       // Got an error!
       console.error(error);
     } else {
+      console.log("ho");
       self.cuisines = cuisines;
       fillCuisinesHTML();
     }

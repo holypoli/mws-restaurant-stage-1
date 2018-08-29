@@ -350,7 +350,6 @@ function () {
         var store = tx.objectStore("restaurants");
         return store.get(parseInt(id));
       }).then(function (restaurant) {
-        console.log(restaurant);
         if (!restaurant) return _this3.fetchRestaurantById(id);
         return restaurant;
       });
@@ -503,6 +502,7 @@ function () {
       }).then(function (response) {
         return response.json();
       }).then(function (data) {
+        console.log(data);
         return _this4.openDb().then(function (db) {
           var tx = db.transaction("restaurants", "readwrite").objectStore("restaurants").put(data);
           return tx.complete;
@@ -521,6 +521,7 @@ function () {
       }).then(function (response) {
         return response.json();
       }).then(function (data) {
+        console.log(data);
         return _this5.openDb().then(function (db) {
           var tx = db.transaction("restaurants", "readwrite").objectStore("restaurants").put(data);
           return tx.complete;
@@ -684,20 +685,23 @@ window.initMap = function () {
 
 var fillRestaurantHTML = function fillRestaurantHTML() {
   var restaurant = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurant;
+  console.log(self.restaurant);
   var name = document.getElementById("restaurant-name");
   name.innerHTML = restaurant.name;
   var heart = document.getElementById("heart");
 
-  if (self.restaurant.is_favorite) {
+  if (self.restaurant.is_favorite === "true") {
+    console.log("true");
     heart.style.fill = "red";
   }
 
   heart.addEventListener("click", function () {
-    if (restaurant.is_favorite) {
+    if (heart.style.fill === "red" || self.restaurant.is_favorite === "true") {
       heart.style.fill = "grey";
-      DBHelper.favorRestaurant(self.restaurant.id);
-    } else {
+      DBHelper.unfavorRestaurant(self.restaurant.id);
+    } else if (heart.style.fill === "grey" || self.restaurant.is_favorite === "false") {
       heart.style.fill = "red";
+      console.log("hello");
       DBHelper.favorRestaurant(self.restaurant.id);
     }
   });

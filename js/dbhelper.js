@@ -94,7 +94,6 @@ class DBHelper {
         return store.get(parseInt(id));
       })
       .then(restaurant => {
-        console.log(restaurant);
         if (!restaurant) return this.fetchRestaurantById(id);
         return restaurant;
       });
@@ -119,13 +118,14 @@ class DBHelper {
    */
   static fetchRestaurantByCuisine(cuisine, callback) {
     // Fetch all restaurants  with proper error handling
-    DBHelper.fetchRestaurants((error, restaurants) => {
+    DBHelper.fetchRestaurantsOffline((error, restaurants) => {
       if (error) {
         console.log(error);
       } else {
         // Filter restaurants to have only given cuisine type
         const results = restaurants.filter(r => r.cuisine_type == cuisine);
       }
+      return results;
     });
   }
 
@@ -134,7 +134,7 @@ class DBHelper {
    */
   static fetchRestaurantByNeighborhood(neighborhood, callback) {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
+    DBHelper.fetchRestaurantsOffline((error, restaurants) => {
       if (error) {
         callback(error, null);
       } else {
@@ -154,7 +154,7 @@ class DBHelper {
     callback
   ) {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
+    DBHelper.fetchRestaurantsOffline((error, restaurants) => {
       if (error) {
         callback(error, null);
       } else {
@@ -177,7 +177,7 @@ class DBHelper {
    */
   static fetchNeighborhoods(callback) {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
+    DBHelper.fetchRestaurantsOffline((error, restaurants) => {
       if (error) {
         callback(error, null);
       } else {
@@ -199,7 +199,7 @@ class DBHelper {
    */
   static fetchCuisines(callback) {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants((error, restaurants) => {
+    DBHelper.fetchRestaurantsOffline((error, restaurants) => {
       if (error) {
         callback(error, null);
       } else {
@@ -209,6 +209,7 @@ class DBHelper {
         const uniqueCuisines = cuisines.filter(
           (v, i) => cuisines.indexOf(v) == i
         );
+        console.log(uniqueCuisines);
         callback(null, uniqueCuisines);
       }
     });
@@ -227,6 +228,7 @@ class DBHelper {
         return response.json();
       })
       .then(data => {
+        console.log(data);
         return this.openDb()
           .then(db => {
             const tx = db
@@ -249,6 +251,7 @@ class DBHelper {
         return response.json();
       })
       .then(data => {
+        console.log(data);
         return this.openDb()
           .then(db => {
             const tx = db

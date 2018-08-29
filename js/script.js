@@ -350,7 +350,6 @@ function () {
         var store = tx.objectStore("restaurants");
         return store.get(parseInt(id));
       }).then(function (restaurant) {
-        console.log(restaurant);
         if (!restaurant) return _this3.fetchRestaurantById(id);
         return restaurant;
       });
@@ -377,15 +376,17 @@ function () {
     key: "fetchRestaurantByCuisine",
     value: function fetchRestaurantByCuisine(cuisine, callback) {
       // Fetch all restaurants  with proper error handling
-      DBHelper.fetchRestaurants(function (error, restaurants) {
+      DBHelper.fetchRestaurantsOffline(function (error, restaurants) {
         if (error) {
           console.log(error);
         } else {
           // Filter restaurants to have only given cuisine type
-          var results = restaurants.filter(function (r) {
+          var _results = restaurants.filter(function (r) {
             return r.cuisine_type == cuisine;
           });
         }
+
+        return results;
       });
     }
     /**
@@ -396,15 +397,16 @@ function () {
     key: "fetchRestaurantByNeighborhood",
     value: function fetchRestaurantByNeighborhood(neighborhood, callback) {
       // Fetch all restaurants
-      DBHelper.fetchRestaurants(function (error, restaurants) {
+      DBHelper.fetchRestaurantsOffline(function (error, restaurants) {
         if (error) {
           callback(error, null);
         } else {
           // Filter restaurants to have only given neighborhood
-          var results = restaurants.filter(function (r) {
+          var _results2 = restaurants.filter(function (r) {
             return r.neighborhood == neighborhood;
           });
-          callback(null, results);
+
+          callback(null, _results2);
         }
       });
     }
@@ -416,27 +418,27 @@ function () {
     key: "fetchRestaurantByCuisineAndNeighborhood",
     value: function fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, callback) {
       // Fetch all restaurants
-      DBHelper.fetchRestaurants(function (error, restaurants) {
+      DBHelper.fetchRestaurantsOffline(function (error, restaurants) {
         if (error) {
           callback(error, null);
         } else {
-          var results = restaurants;
+          var _results3 = restaurants;
 
           if (cuisine != "all") {
             // filter by cuisine
-            results = results.filter(function (r) {
+            _results3 = _results3.filter(function (r) {
               return r.cuisine_type == cuisine;
             });
           }
 
           if (neighborhood != "all") {
             // filter by neighborhood
-            results = results.filter(function (r) {
+            _results3 = _results3.filter(function (r) {
               return r.neighborhood == neighborhood;
             });
           }
 
-          callback(null, results);
+          callback(null, _results3);
         }
       });
     }
@@ -448,7 +450,7 @@ function () {
     key: "fetchNeighborhoods",
     value: function fetchNeighborhoods(callback) {
       // Fetch all restaurants
-      DBHelper.fetchRestaurants(function (error, restaurants) {
+      DBHelper.fetchRestaurantsOffline(function (error, restaurants) {
         if (error) {
           callback(error, null);
         } else {
@@ -474,7 +476,7 @@ function () {
     key: "fetchCuisines",
     value: function fetchCuisines(callback) {
       // Fetch all restaurants
-      DBHelper.fetchRestaurants(function (error, restaurants) {
+      DBHelper.fetchRestaurantsOffline(function (error, restaurants) {
         if (error) {
           callback(error, null);
         } else {
@@ -488,6 +490,7 @@ function () {
             return _cuisines.indexOf(v) == i;
           });
 
+          console.log(uniqueCuisines);
           callback(null, uniqueCuisines);
         }
       });
@@ -507,6 +510,7 @@ function () {
       }).then(function (response) {
         return response.json();
       }).then(function (data) {
+        console.log(data);
         return _this4.openDb().then(function (db) {
           var tx = db.transaction("restaurants", "readwrite").objectStore("restaurants").put(data);
           return tx.complete;
@@ -525,6 +529,7 @@ function () {
       }).then(function (response) {
         return response.json();
       }).then(function (data) {
+        console.log(data);
         return _this5.openDb().then(function (db) {
           var tx = db.transaction("restaurants", "readwrite").objectStore("restaurants").put(data);
           return tx.complete;
@@ -703,6 +708,7 @@ var fetchCuisines = function fetchCuisines() {
       // Got an error!
       console.error(error);
     } else {
+      console.log("ho");
       self.cuisines = cuisines;
       fillCuisinesHTML();
     }

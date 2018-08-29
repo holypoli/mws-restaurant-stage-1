@@ -53,19 +53,23 @@ window.initMap = () => {
  * Create restaurant HTML and add it to the webpage
  */
 const fillRestaurantHTML = (restaurant = self.restaurant) => {
+  console.log(self.restaurant);
   const name = document.getElementById("restaurant-name");
   name.innerHTML = restaurant.name;
 
   const heart = document.getElementById("heart");
-  if (self.restaurant.is_favorite) {
+  if (self.restaurant.is_favorite === "true") {
     heart.style.fill = "red";
   }
 
   heart.addEventListener("click", () => {
-    if (restaurant.is_favorite) {
+    if (heart.style.fill === "red" || self.restaurant.is_favorite === "true") {
       heart.style.fill = "grey";
-      DBHelper.favorRestaurant(self.restaurant.id);
-    } else {
+      DBHelper.unfavorRestaurant(self.restaurant.id);
+    } else if (
+      heart.style.fill === "grey" ||
+      self.restaurant.is_favorite === "false"
+    ) {
       heart.style.fill = "red";
       DBHelper.favorRestaurant(self.restaurant.id);
     }
