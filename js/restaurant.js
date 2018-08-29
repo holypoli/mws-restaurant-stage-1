@@ -453,15 +453,13 @@ function () {
           callback(error, null);
         } else {
           // Get all neighborhoods from all restaurants
-          var _neighborhoods = restaurants.map(function (v, i) {
+          var neighborhoods = restaurants.map(function (v, i) {
             return restaurants[i].neighborhood;
           }); // Remove duplicates from neighborhoods
 
-
-          var uniqueNeighborhoods = _neighborhoods.filter(function (v, i) {
-            return _neighborhoods.indexOf(v) == i;
+          var uniqueNeighborhoods = neighborhoods.filter(function (v, i) {
+            return neighborhoods.indexOf(v) == i;
           });
-
           callback(null, uniqueNeighborhoods);
         }
       });
@@ -479,15 +477,13 @@ function () {
           callback(error, null);
         } else {
           // Get all cuisines from all restaurants
-          var _cuisines = restaurants.map(function (v, i) {
+          var cuisines = restaurants.map(function (v, i) {
             return restaurants[i].cuisine_type;
           }); // Remove duplicates from cuisines
 
-
-          var uniqueCuisines = _cuisines.filter(function (v, i) {
-            return _cuisines.indexOf(v) == i;
+          var uniqueCuisines = cuisines.filter(function (v, i) {
+            return cuisines.indexOf(v) == i;
           });
-
           callback(null, uniqueCuisines);
         }
       });
@@ -637,36 +633,11 @@ function () {
   return DBHelper;
 }();
 
-var restaurants, neighborhoods, cuisines;
+var restaurant;
 var map;
-var markers = [];
-/**
- * Fetch neighborhoods and cuisines as soon as the page is loaded.
- */
-
-document.addEventListener("DOMContentLoaded", function (event) {
-  fetchNeighborhoods();
-  fetchCuisines();
-  registerServiceWorker();
-  document.getElementById("map").overflow = "initial";
-});
-/**
- * Fetch all neighborhoods and set their HTML.
- */
-
-var fetchNeighborhoods = function fetchNeighborhoods() {
-  DBHelper.fetchNeighborhoods(function (error, neighborhoods) {
-    if (error) {
-      // Got an error
-      console.error(error);
-    } else {
-      self.neighborhoods = neighborhoods;
-      fillNeighborhoodsHTML();
-    }
-  });
-};
-/* Register Service Worker */
-
+/*
+ * Register Service Worker
+*/
 
 var registerServiceWorker = function registerServiceWorker() {
   if (navigator.serviceWorker) {
@@ -678,185 +649,302 @@ var registerServiceWorker = function registerServiceWorker() {
   }
 };
 /**
- *  Set neighborhoods HTML.
- */
-
-
-var fillNeighborhoodsHTML = function fillNeighborhoodsHTML() {
-  var neighborhoods = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.neighborhoods;
-  var select = document.getElementById("neighborhoods-select");
-  neighborhoods.forEach(function (neighborhood) {
-    var option = document.createElement("option");
-    option.innerHTML = neighborhood;
-    option.value = neighborhood;
-    select.append(option);
-  });
-};
-/**
- * Fetch all cuisines and set their HTML.
- */
-
-
-var fetchCuisines = function fetchCuisines() {
-  DBHelper.fetchCuisines(function (error, cuisines) {
-    if (error) {
-      // Got an error!
-      console.error(error);
-    } else {
-      self.cuisines = cuisines;
-      fillCuisinesHTML();
-    }
-  });
-};
-/**
- * Set cuisines HTML.
- */
-
-
-var fillCuisinesHTML = function fillCuisinesHTML() {
-  var cuisines = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.cuisines;
-  var select = document.getElementById("cuisines-select");
-  cuisines.forEach(function (cuisine) {
-    var option = document.createElement("option");
-    option.innerHTML = cuisine;
-    option.value = cuisine;
-    select.append(option);
-  });
-};
-/**
  * Initialize Google map, called from HTML.
  */
 
 
 window.initMap = function () {
-  var loc = {
-    lat: 40.722216,
-    lng: -73.987501
-  };
-  self.map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 12,
-    center: loc,
-    scrollwheel: false
-  });
-  updateRestaurants();
+  var id = getParameterByName("id");
+
+  if (!id) {
+    console.error("No Id in the URL");
+    return;
+  } else {
+    DBHelper.fetchRestaurantByIdOffline(id).then(function (restaurant) {
+      self.restaurant = restaurant;
+      fillRestaurantHTML();
+      self.map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 16,
+        center: restaurant.latlng,
+        scrollwheel: false
+      });
+      var form = document.getElementById("review-form");
+      enableReviewForm(form);
+      enableCloseReviewForm(form);
+      registerServiceWorker();
+      fillBreadcrumb();
+      DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+    });
+  }
 };
 /**
- * Update page and map for current restaurants.
+ * Create restaurant HTML and add it to the webpage
  */
 
 
-var updateRestaurants = function updateRestaurants() {
-  var cSelect = document.getElementById("cuisines-select");
-  var nSelect = document.getElementById("neighborhoods-select");
-  var cIndex = cSelect.selectedIndex;
-  var nIndex = nSelect.selectedIndex;
-  var cuisine = cSelect[cIndex].value;
-  var neighborhood = nSelect[nIndex].value;
-  DBHelper.fetchRestaurantsOffline().then(function (restaurants) {
-    self.restaurants = restaurants;
-    resetRestaurants(restaurants);
-    fillRestaurantsHTML();
-  });
-};
-/**
- * Clear current restaurants, their HTML and remove their map markers.
- */
-
-
-var resetRestaurants = function resetRestaurants(restaurants) {
-  // Remove all restaurants
-  self.restaurants = [];
-  var ul = document.getElementById("restaurants-list");
-  ul.innerHTML = ""; // Remove all map markers
-
-  self.markers.forEach(function (m) {
-    return m.setMap(null);
-  });
-  self.markers = [];
-  self.restaurants = restaurants;
-};
-/**
- * Create all restaurants HTML and add them to the webpage.
- */
-
-
-var fillRestaurantsHTML = function fillRestaurantsHTML() {
-  var restaurants = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurants;
-  var ul = document.getElementById("restaurants-list");
-  restaurants.forEach(function (restaurant) {
-    ul.append(createRestaurantHTML(restaurant));
-  });
-  lazyLoading();
-  addMarkersToMap();
-};
-/**
- * Create restaurant HTML.
- */
-
-
-var createRestaurantHTML = function createRestaurantHTML(restaurant) {
-  var li = document.createElement("li");
-  var link = document.createElement("a");
-  link.href = DBHelper.urlForRestaurant(restaurant);
-  link.setAttribute("aria-hidden", "true");
-  link.setAttribute("tabindex", "-1");
-  li.append(link);
-  var image = document.createElement("img");
-  var datasrc = document.createAttribute("data-src");
-  datasrc.value = DBHelper.imageSrcForRestaurant(restaurant);
-  var datasrcset = document.createAttribute("data-srcset");
-  datasrcset.value = DBHelper.imageUrlForRestaurant(restaurant);
-  image.className = "restaurant-img";
-  image.setAttributeNode(datasrc);
-  image.setAttributeNode(datasrcset); // image.srcset = DBHelper.imageUrlForRestaurant(restaurant);
-
-  image.alt = "".concat(restaurant.name, ", ").concat(restaurant.neighborhood);
-  link.append(image);
-  var name = document.createElement("h3");
+var fillRestaurantHTML = function fillRestaurantHTML() {
+  var restaurant = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurant;
+  var name = document.getElementById("restaurant-name");
   name.innerHTML = restaurant.name;
-  li.append(name);
-  var neighborhood = document.createElement("p");
-  neighborhood.innerHTML = restaurant.neighborhood;
-  li.append(neighborhood);
-  var address = document.createElement("p");
+  var heart = document.getElementById("heart");
+
+  if (self.restaurant.is_favorite) {
+    heart.style.fill = "red";
+  }
+
+  heart.addEventListener("click", function () {
+    if (restaurant.is_favorite) {
+      heart.style.fill = "grey";
+      DBHelper.favorRestaurant(self.restaurant.id);
+    } else {
+      heart.style.fill = "red";
+      DBHelper.favorRestaurant(self.restaurant.id);
+    }
+  });
+  var address = document.getElementById("restaurant-address");
   address.innerHTML = restaurant.address;
-  li.append(address);
-  var more = document.createElement("a");
-  more.innerHTML = "View Details";
-  more.href = DBHelper.urlForRestaurant(restaurant);
-  li.append(more);
+  var image = document.getElementById("restaurant-img");
+  image.className = "restaurant-img";
+  image.src = DBHelper.imageSrcForRestaurant(restaurant);
+  image.srcset = DBHelper.imageUrlForRestaurant(restaurant);
+  image.alt = "".concat(restaurant.name, ",\n   ").concat(restaurant.neighborhood);
+  var cuisine = document.getElementById("restaurant-cuisine");
+  cuisine.innerHTML = restaurant.cuisine_type; // fill operating hours
+
+  if (restaurant.operating_hours) {
+    fillRestaurantHoursHTML();
+  } // fill reviews
+
+
+  fillReviewsHTML();
+};
+/**
+ * Create restaurant operating hours HTML table and add it to the webpage.
+ */
+
+
+var fillRestaurantHoursHTML = function fillRestaurantHoursHTML() {
+  var operatingHours = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurant.operating_hours;
+  var hours = document.getElementById("restaurant-hours");
+
+  for (var key in operatingHours) {
+    var row = document.createElement("tr");
+    var day = document.createElement("td");
+    day.innerHTML = key;
+    row.appendChild(day);
+    var time = document.createElement("td");
+    time.innerHTML = operatingHours[key];
+    row.appendChild(time);
+    hours.appendChild(row);
+  }
+};
+/**
+ * Create all reviews HTML and add them to the webpage.
+ */
+
+
+var fillReviewsHTML = function fillReviewsHTML() {
+  var container = document.getElementById("reviews-container");
+  DBHelper.fetchRestaurantReviews(self.restaurant.id).then(function (reviews) {
+    if (!reviews) {
+      var noReviews = document.createElement("p");
+      noReviews.innerHTML = "No reviews yet!";
+      container.appendChild(noReviews);
+      return;
+    }
+
+    var ul = document.getElementById("reviews-list");
+    ul.innerHTML = "";
+    reviews.forEach(function (review) {
+      ul.appendChild(createReviewHTML(review));
+    });
+    container.appendChild(ul);
+  });
+};
+/**
+ * Create review HTML and add it to the webpage.
+ */
+
+
+var createReviewHTML = function createReviewHTML(review) {
+  var li = document.createElement("li");
+  var liHeader = document.createElement("div");
+  liHeader.className = "review-header";
+  li.appendChild(liHeader);
+  var name = document.createElement("p");
+  name.className = "name";
+  name.innerHTML = review.name;
+  liHeader.appendChild(name);
+  var date = document.createElement("p");
+  var writtenAt = new Date(review.updatedAt).toDateString().split(" ");
+  date.className = "date";
+  date.innerHTML = writtenAt[2] + ". " + writtenAt[1] + ", " + writtenAt[3];
+  liHeader.appendChild(date);
+  var rating = document.createElement("p");
+  rating.className = "rating";
+  rating.innerHTML = "Rating: ".concat(review.rating);
+  li.appendChild(rating);
+  var comments = document.createElement("p");
+  comments.className = "comments";
+  comments.innerHTML = review.comments;
+  li.appendChild(comments);
+  var submitButton = document.getElementById("submit-review");
+  submitButton.onclick = submitForm;
   return li;
 };
+
+var submitForm = function submitForm() {
+  var review = new FormData();
+  var form = document.getElementById("review-form");
+  review.append("restaurant_id", self.restaurant.id);
+  var nameInput = document.getElementById("name");
+  var name = nameInput.value;
+
+  if (!name) {
+    nameInput.style.borderColor = "red";
+    return;
+  }
+
+  review.append("name", name);
+  var ratingInput = document.getElementById("rating");
+  var commentsInput = document.getElementById("comment");
+  var successMessage = document.querySelector(".success-message");
+  var offlineMessage = document.querySelector(".offline-message");
+  var rating = ratingInput.value;
+  var comments = commentsInput.value;
+  review.append("rating", rating);
+
+  if (!rating) {
+    ratingInput.style.borderColor = "red";
+    return;
+  }
+
+  review.append("comments", comments);
+
+  if (navigator.onLine) {
+    DBHelper.addRestaurantReview(review).then(function () {
+      nameInput.value = "";
+      ratingInput.value = 0;
+      commentsInput.value = "";
+      form.style.display = "none";
+      fillReviewsHTML();
+      successMessage.style.display = "block";
+      setTimeout(function () {
+        successMessage.style.display = "none";
+      }, 2000);
+    });
+  } else {
+    var reviewData = {
+      restaurant_id: self.restaurant.id,
+      name: name,
+      rating: rating,
+      comments: comments,
+      createdAt: Date.now()
+    };
+    return DBHelper.openDb().then(function (db) {
+      var tx = db.transaction("reviews", "readwrite");
+      var store = tx.objectStore("reviews");
+      store.put(reviewData);
+      return tx.complete;
+    }).then(function () {
+      nameInput.value = "";
+      ratingInput.value = 0;
+      commentsInput.value = "";
+      form.style.display = "none";
+      offlineMessage.style.display = "block";
+      setTimeout(function () {
+        offlineMessage.style.display = "none";
+      }, 4000);
+    });
+  }
+};
 /**
- * Add markers for current restaurants to the map.
+ * Add restaurant name to the breadcrumb navigation menu
  */
 
 
-var addMarkersToMap = function addMarkersToMap() {
-  var restaurants = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurants;
-  restaurants.forEach(function (restaurant) {
-    // Add marker to the map
-    var marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
-    google.maps.event.addListener(marker, "click", function () {
-      window.location.href = marker.url;
-    });
-    self.markers.push(marker);
-  });
+var fillBreadcrumb = function fillBreadcrumb() {
+  var restaurant = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : self.restaurant;
+  var breadcrumb = document.getElementById("breadcrumb");
+  var li = document.createElement("li");
+  li.innerHTML = restaurant.name;
+  breadcrumb.appendChild(li);
+};
+/*
+ * Create page if there is no id
+ */
+
+
+var createEmptyPage = function createEmptyPage() {
+  var textarea = document.getElementById("restaurant-container");
+  var text = document.createElement("p");
+  var cuisineBox = document.getElementById("restaurant-cuisine");
+  cuisineBox.hidden = "true";
+  text.innerHTML = "This page doesn't exist!";
+  text.style.marginLeft = "20px";
+  text.style.marginRight = "20px";
+  textarea.appendChild(text);
+};
+/**
+ * Get a parameter by name from page URL.
+ */
+
+
+var getParameterByName = function getParameterByName(name, url) {
+  if (!url) url = window.location.href;
+  name = name.replace(/[\[\]]/g, "\\$&");
+  var regex = new RegExp("[?&]".concat(name, "(=([^&#]*)|&|#|$)")),
+      results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return "";
+  return decodeURIComponent(results[2].replace(/\+/g, " "));
 };
 
-var lazyLoading = function lazyLoading() {
-  var lazyImages = document.querySelectorAll(".restaurant-img");
-  var intersectionObserver = new IntersectionObserver(function (entries, observer) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        var lazyImage = entry.target;
-        lazyImage.src = lazyImage.dataset.src;
-        lazyImage.srcset = lazyImage.dataset.srcset;
-        intersectionObserver.unobserve(lazyImage);
-      }
-    });
-  });
-  lazyImages.forEach(function (lazyImage) {
-    intersectionObserver.observe(lazyImage);
-  });
+var enableReviewForm = function enableReviewForm(form) {
+  var button = document.getElementById("review-btn");
+
+  button.onclick = function () {
+    form.style.display = "block";
+  };
 };
+
+var enableCloseReviewForm = function enableCloseReviewForm(form) {
+  var close = document.querySelector(".modal-close");
+
+  close.onclick = function () {
+    return form.style.display = "none";
+  };
+};
+
+window.addEventListener("online", function () {
+  return DBHelper.openDb().then(function (db) {
+    var tx = db.transaction("reviews", "readonly");
+    var store = tx.objectStore("reviews");
+    return store.getAll();
+  }).then(function (reviews) {
+    if (reviews && reviews.length > 0) {
+      return Promise.all(reviews.map(function (review) {
+        var reviewData = new FormData();
+        reviewData.append("restaurant_id", review.restaurant_id);
+        reviewData.append("name", review.name);
+        reviewData.append("rating", review.rating);
+        reviewData.append("createdAt", review.createdAt);
+        reviewData.append("comments", review.comments);
+        return fetch(DBHelper.REVIEWS_URL, {
+          method: "POST",
+          body: reviewData
+        }).then(function (response) {
+          return response.json;
+        }).then(function (data) {
+          if (data) {
+            DBHelper.openDb().then(function (db) {
+              var tx = db.transaction("reviews", "readwrite");
+              var store = tx.objectStore("reviews");
+              return store.delete(review.id);
+            }).then(fillReviewsHTML);
+          }
+        });
+      }));
+    }
+  });
+});

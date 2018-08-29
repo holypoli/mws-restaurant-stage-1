@@ -4,7 +4,7 @@ var map;
 /*
  * Register Service Worker
 */
-registerServiceWorker = () => {
+const registerServiceWorker = () => {
   if (navigator.serviceWorker) {
     navigator.serviceWorker.register("sw.js").then(
       reg => {
@@ -182,7 +182,10 @@ const submitForm = () => {
   let nameInput = document.getElementById("name");
   let name = nameInput.value;
 
-  if (!name) return;
+  if (!name) {
+    nameInput.style.borderColor = "red";
+    return;
+  }
   review.append("name", name);
 
   let ratingInput = document.getElementById("rating");
@@ -194,7 +197,10 @@ const submitForm = () => {
   let comments = commentsInput.value;
 
   review.append("rating", rating);
-  if (!rating) return;
+  if (!rating) {
+    ratingInput.style.borderColor = "red";
+    return;
+  }
   review.append("comments", comments);
 
   if (navigator.onLine) {

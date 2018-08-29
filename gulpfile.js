@@ -71,10 +71,23 @@ gulp.task("images", () => {
     .pipe(gulp.dest("responsive-img"));
 });
 
-gulp.task("javascript", () => {
+gulp.task("main-js", () => {
   gulp
-    .src(["js/idb.js", "js/dbhelper.js", "js/main.js", "js/restaurant_info.js"])
+    .src(["js/idb.js", "js/dbhelper.js", "js/main.js"])
     .pipe(concat("script.js"))
+    .pipe(
+      babel({
+        presets: ["@babel/env"]
+      })
+    )
+    .pipe(minify())
+    .pipe(gulp.dest("./js"));
+});
+
+gulp.task("restaurant-js", () => {
+  gulp
+    .src(["js/idb.js", "js/dbhelper.js", "js/restaurant_info.js"])
+    .pipe(concat("restaurant.js"))
     .pipe(
       babel({
         presets: ["@babel/env"]
