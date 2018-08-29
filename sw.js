@@ -3,6 +3,7 @@
 */
 const staticCacheName = "restaurant-cache-v3";
 const imgCacheName = "images-cache-v1";
+const reviewCacheName = "reviews-cache-v1";
 
 self.addEventListener("install", event => {
   event.waitUntil(
@@ -44,21 +45,43 @@ self.addEventListener("fetch", event => {
   const requestUrl = new URL(event.request.url);
 
   if (requestUrl.pathname.startsWith("/responsive-img/")) {
-    caches.open(imgCacheName).then(cache => {
-      cache.match(event.request.url).then(response => {
-        return (
-          response ||
-          fetch(event.request).then(serverResponse => {
-            cache.put(event.request.url, serverResponse.clone());
-            return serverResponse;
-          })
-        );
-      });
-    });
+    event.respondWith(
+      caches.open(imgCacheName).then(cache => {
+        return cache.match(event.request.url).then(response => {
+          console.log(response);
+          return (
+            response ||
+            fetch(event.request).then(serverResponse => {
+              cache.put(event.request.url, serverResponse.clone());
+              return serverResponse;
+            })
+          );
+        });
+      })
+    );
+    return;
+  }
+
+  if (requestUrl.pathname.startsWith("/reviews/")) {
+    event.respondWith(
+      caches.open(reviewCacheName).then(cache => {
+        return cache.match(event.request.url).then(response => {
+          return (
+            response ||
+            fetch(event.request).then(serverResponse => {
+              cache.put(event.request.url, serverResponse.clone());
+              return serverResponse;
+            })
+          );
+        });
+      })
+    );
+    return;
   }
 
   event.respondWith(
     caches.match(requestUrl.pathname).then(response => {
+      console.log(response);
       return response || fetch(event.request);
     })
   );
