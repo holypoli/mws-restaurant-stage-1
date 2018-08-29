@@ -167,30 +167,59 @@ submitForm = () => {
   let nameInput = document.getElementById("name");
   let name = nameInput.value;
 
+  if (!name) return;
   review.append("name", name);
 
-  console.log(name);
-  if (!name) {
-    nameInput.style.borderColor = "red";
-    nameInput.placeholder = "REQUIRED";
-    return;
-  }
   let ratingInput = document.getElementById("rating");
   let commentsInput = document.getElementById("comment");
+  let successMessage = document.querySelector(".success-message");
+  let offlineMessage = document.querySelector(".offline-message");
 
   let rating = ratingInput.value;
   let comments = commentsInput.value;
 
   review.append("rating", rating);
+  if (!rating) return;
   review.append("comments", comments);
 
-  DBHelper.addRestaurantReview(review).then(() => {
-    nameInput.value = "";
-    rating = 0;
-    comments = "";
-    form.style.display = "none";
-    fillReviewsHTML();
-  });
+  if (navigator.onLine) {
+    DBHelper.addRestaurantReview(review).then(() => {
+      nameInput.value = "";
+      ratingInput.value = 0;
+      commentsInput.value = "";
+      form.style.display = "none";
+      fillReviewsHTML();
+      successMessage.style.display = "block";
+      setTimeout(() => {
+        successMessage.style.display = "none";
+      }, 2000);
+    });
+  } else {
+    let reviewData = {
+      restaurant_id: self.restaurant.id,
+      name: name,
+      rating: rating,
+      comments: comments,
+      createdAt: Date.now()
+    };
+    return DBHelper.openDb()
+      .then(db => {
+        const tx = db.transaction("reviews", "readwrite");
+        const store = tx.objectStore("reviews");
+        store.put(reviewData);
+        return tx.complete;
+      })
+      .then(() => {
+        nameInput.value = "";
+        ratingInput.value = 0;
+        commentsInput.value = "";
+        form.style.display = "none";
+        offlineMessage.style.display = "block";
+        setTimeout(() => {
+          offlineMessage.style.display = "none";
+        }, 4000);
+      });
+  }
 };
 
 /**
@@ -233,7 +262,6 @@ getParameterByName = (name, url) => {
 enableReviewForm = form => {
   const button = document.getElementById("review-btn");
   button.onclick = () => {
-    console.log("click");
     form.style.display = "block";
   };
 };
@@ -242,3 +270,46 @@ enableCloseReviewForm = form => {
   const close = document.querySelector(".modal-close");
   close.onclick = () => (form.style.display = "none");
 };
+
+window.addEventListener("online", () => {
+  return DBHelper.openDb()
+    .then(db => {
+      let tx = db.transaction("reviews", "readonly");
+      let store = tx.objectStore("reviews");
+      return store.getAll();
+    })
+    .then(reviews => {
+      if (reviews && reviews.length > 0) {
+        return Promise.all(
+          reviews.map(review => {
+            const reviewData = new FormData();
+
+            reviewData.append("restaurant_id", review.restaurant_id);
+            reviewData.append("name", review.name);
+            reviewData.append("rating", review.rating);
+            reviewData.append("createdAt", review.createdAt);
+            reviewData.append("comments", review.comments);
+
+            return fetch(DBHelper.REVIEWS_URL, {
+              method: "POST",
+              body: reviewData
+            })
+              .then(response => {
+                return response.json;
+              })
+              .then(data => {
+                if (data) {
+                  DBHelper.openDb()
+                    .then(db => {
+                      let tx = db.transaction("reviews", "readwrite");
+                      let store = tx.objectStore("reviews");
+                      return store.delete(review.id);
+                    })
+                    .then(fillReviewsHTML);
+                }
+              });
+          })
+        );
+      }
+    });
+});

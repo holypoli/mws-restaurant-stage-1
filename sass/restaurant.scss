@@ -245,6 +245,31 @@
   }
 }
 
+/* ====================== Messages for review sending =====================*/
+
+.success-message, .offline-message {
+  width: 300px;
+  height: 85px;
+  font-size: 18px;
+  background-color: #ddd;
+  box-shadow: 13px 13px 8px 5px #999;
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-left: -150px;
+  margin-top: -25px;
+  z-index: 50;
+  padding: 10px;
+  
+  p {
+    color: #ef8800;
+    font-weight: bold;
+  }
+}
+
+
+
 /* ====================== Media Queries for restaurant page ====================== */
 
 @media screen and (min-width: 400px) {

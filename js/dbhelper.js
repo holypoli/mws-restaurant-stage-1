@@ -20,10 +20,18 @@ class DBHelper {
    * Create new IndexDB
    */
   static openDb() {
-    const dbPromise = idb.open("restaurant-db", 1, upgradeDb => {
-      let restaurantStore = upgradeDb.createObjectStore("restaurants", {
-        keyPath: "id"
-      });
+    const dbPromise = idb.open("restaurant-db", 2, upgradeDb => {
+      switch (upgradeDb.oldVersion) {
+        case 0:
+          let restaurantStore = upgradeDb.createObjectStore("restaurants", {
+            keyPath: "id"
+          });
+        case 1:
+          let reviewStore = upgradeDb.createObjectStore("reviews", {
+            autoIncrement: true,
+            keyPath: "id"
+          });
+      }
     });
 
     return dbPromise;
