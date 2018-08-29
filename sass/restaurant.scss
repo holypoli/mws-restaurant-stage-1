@@ -206,6 +206,12 @@
   z-index: 50;
   box-shadow: 13px 13px 8px 5px #999;
 
+  button {
+    float: unset;
+    margin-left: 15px;
+    font-size: 16px;
+  }
+
   h3 {
     font-size: 18px;
     margin-left: 10px;

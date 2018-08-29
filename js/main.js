@@ -72,7 +72,7 @@ const fetchCuisines = () => {
 /**
  * Set cuisines HTML.
  */
-fillCuisinesHTML = (cuisines = self.cuisines) => {
+const fillCuisinesHTML = (cuisines = self.cuisines) => {
   const select = document.getElementById("cuisines-select");
 
   cuisines.forEach(cuisine => {
@@ -103,7 +103,7 @@ window.initMap = () => {
 /**
  * Update page and map for current restaurants.
  */
-updateRestaurants = () => {
+const updateRestaurants = () => {
   const cSelect = document.getElementById("cuisines-select");
   const nSelect = document.getElementById("neighborhoods-select");
 
@@ -194,7 +194,7 @@ const createRestaurantHTML = restaurant => {
 /**
  * Add markers for current restaurants to the map.
  */
-addMarkersToMap = (restaurants = self.restaurants) => {
+const addMarkersToMap = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     // Add marker to the map
     const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
@@ -205,7 +205,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
   });
 };
 
-lazyLoading = () => {
+const lazyLoading = () => {
   let lazyImages = document.querySelectorAll(".restaurant-img");
 
   let intersectionObserver = new IntersectionObserver((entries, observer) => {

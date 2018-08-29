@@ -1,7 +1,11 @@
 const gulp = require("gulp");
 const sass = require("gulp-sass");
 const autoprefixer = require("gulp-autoprefixer");
+const concat = require("gulp-concat");
+const minify = require("gulp-minify");
+const uglify = require("gulp-uglify");
 const watch = require("gulp-watch");
+const babel = require("gulp-babel");
 const responsive = require("gulp-responsive-images");
 
 gulp.task("styles", done => {
@@ -65,4 +69,17 @@ gulp.task("images", () => {
       })
     )
     .pipe(gulp.dest("responsive-img"));
+});
+
+gulp.task("javascript", () => {
+  gulp
+    .src(["js/idb.js", "js/dbhelper.js", "js/main.js", "js/restaurant_info.js"])
+    .pipe(concat("script.js"))
+    .pipe(
+      babel({
+        presets: ["@babel/env"]
+      })
+    )
+    .pipe(minify())
+    .pipe(gulp.dest("./js"));
 });

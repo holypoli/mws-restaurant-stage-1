@@ -52,7 +52,7 @@ window.initMap = () => {
 /**
  * Create restaurant HTML and add it to the webpage
  */
-fillRestaurantHTML = (restaurant = self.restaurant) => {
+const fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById("restaurant-name");
   name.innerHTML = restaurant.name;
 
@@ -96,7 +96,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.
  */
-fillRestaurantHoursHTML = (
+const fillRestaurantHoursHTML = (
   operatingHours = self.restaurant.operating_hours
 ) => {
   const hours = document.getElementById("restaurant-hours");
@@ -118,7 +118,7 @@ fillRestaurantHoursHTML = (
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-fillReviewsHTML = () => {
+const fillReviewsHTML = () => {
   const container = document.getElementById("reviews-container");
 
   DBHelper.fetchRestaurantReviews(self.restaurant.id).then(reviews => {
@@ -140,7 +140,7 @@ fillReviewsHTML = () => {
 /**
  * Create review HTML and add it to the webpage.
  */
-createReviewHTML = review => {
+const createReviewHTML = review => {
   const li = document.createElement("li");
   const liHeader = document.createElement("div");
   liHeader.className = "review-header";
@@ -173,7 +173,7 @@ createReviewHTML = review => {
   return li;
 };
 
-submitForm = () => {
+const submitForm = () => {
   const review = new FormData();
   const form = document.getElementById("review-form");
 
@@ -240,7 +240,7 @@ submitForm = () => {
 /**
  * Add restaurant name to the breadcrumb navigation menu
  */
-fillBreadcrumb = (restaurant = self.restaurant) => {
+const fillBreadcrumb = (restaurant = self.restaurant) => {
   const breadcrumb = document.getElementById("breadcrumb");
   const li = document.createElement("li");
   li.innerHTML = restaurant.name;
@@ -250,7 +250,7 @@ fillBreadcrumb = (restaurant = self.restaurant) => {
 /*
  * Create page if there is no id
  */
-createEmptyPage = () => {
+const createEmptyPage = () => {
   const textarea = document.getElementById("restaurant-container");
   const text = document.createElement("p");
   const cuisineBox = document.getElementById("restaurant-cuisine");
@@ -264,7 +264,7 @@ createEmptyPage = () => {
 /**
  * Get a parameter by name from page URL.
  */
-getParameterByName = (name, url) => {
+const getParameterByName = (name, url) => {
   if (!url) url = window.location.href;
   name = name.replace(/[\[\]]/g, "\\$&");
   const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`),
@@ -274,14 +274,14 @@ getParameterByName = (name, url) => {
   return decodeURIComponent(results[2].replace(/\+/g, " "));
 };
 
-enableReviewForm = form => {
+const enableReviewForm = form => {
   const button = document.getElementById("review-btn");
   button.onclick = () => {
     form.style.display = "block";
   };
 };
 
-enableCloseReviewForm = form => {
+const enableCloseReviewForm = form => {
   const close = document.querySelector(".modal-close");
   close.onclick = () => (form.style.display = "none");
 };
